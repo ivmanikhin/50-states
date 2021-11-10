@@ -20,16 +20,20 @@ print(state_names)
 states_on_map = []
 screen.tracer(0)
 screen.update()
-while len(state_names) > 0:
+score = 0
+while score < 50:
     try:
-        answer = screen.textinput('Guess the State', "What's another state's name?").lower()
+        answer = screen.textinput(f'{score}/50 States Correct', "What's another state's name?").lower()
         print(answer)
     except AttributeError:
         break
     if answer in state_names:
+        score += 1
         state_index = state_names.index(answer)
         state_names[state_index] = ''
         states_on_map.append(StateOnMap(state_names_original[state_index], (states_x[state_index], states_y[state_index])))
         screen.update()
+    if score == 50:
+        turtle.write("You WIN!", move=False, align='center', font=('Arial', 16, 'normal'))
 
 turtle.mainloop()
