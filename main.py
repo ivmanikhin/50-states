@@ -1,14 +1,15 @@
 import pandas as pd
+from PIL import Image
 import turtle
 from state_on_map import StateOnMap
 
+image = Image.open('blank_states_img.gif')
+print(image.size)
 screen = turtle.Screen()
 screen.title('50 states quiz')
-screen.setup(800, 600)
+screen.setup(image.size[0], image.size[1])
 screen.tracer(0)
-us_map = 'blank_states_img.gif'
-screen.addshape(us_map)
-turtle.shape(us_map)
+screen.bgpic('blank_states_img.gif')
 states = pd.read_csv('50_states.csv')
 states_on_map = []
 screen.tracer(0)
@@ -20,7 +21,8 @@ while len(states) > 0:
     except AttributeError:
         break
     if answer in states.state.to_list():
-        states_on_map.append(StateOnMap(answer, (int(states[states.state == answer].x), int(states[states.state == answer].y))))
+        states_on_map.append(StateOnMap(answer, (int(states[states.state == answer].x),
+                                                 int(states[states.state == answer].y))))
         screen.update()
         states = states.drop(states[states.state == answer].index.to_list())
         print(len(states))
