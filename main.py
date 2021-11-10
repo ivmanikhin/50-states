@@ -10,30 +10,23 @@ us_map = 'blank_states_img.gif'
 screen.addshape(us_map)
 turtle.shape(us_map)
 states = pd.read_csv('50_states.csv')
-state_names_original = states.state.to_list()
-state_names = [item.lower() for item in state_names_original]
-states_x = states.x.to_list()
-states_y = states.y.to_list()
-states_x = [int(x) for x in states_x]
-states_y = [int(y) for y in states_y]
-print(state_names)
 states_on_map = []
 screen.tracer(0)
 screen.update()
-score = 0
-while score < 50:
+while len(states) > 0:
     try:
-        answer = screen.textinput(f'{score}/50 States Correct', "What's another state's name?").lower()
+        answer = screen.textinput(f'{50 - len(states)}/50 States Correct', "What's another state's name?").title()
         print(answer)
     except AttributeError:
         break
-    if answer in state_names:
-        score += 1
-        state_index = state_names.index(answer)
-        state_names[state_index] = ''
-        states_on_map.append(StateOnMap(state_names_original[state_index], (states_x[state_index], states_y[state_index])))
+    if answer in states.state.to_list():
+        states_on_map.append(StateOnMap(answer, (int(states[states.state == answer].x), int(states[states.state == answer].y))))
         screen.update()
-    if score == 50:
+        states = states.drop(states[states.state == answer].index.to_list())
+        print(len(states))
+    if answer == 'Exit':
+        break
+    if len(states) == 0:
         turtle.write("You WIN!", move=False, align='center', font=('Arial', 16, 'normal'))
-
 turtle.mainloop()
+states.state.to_csv('rest_states.csv', header=False, index=False)
